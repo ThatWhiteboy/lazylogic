@@ -10,7 +10,7 @@ OUTPUT_FILE = os.path.expanduser("~/lazylogic/titan_output.txt")
 
 # --- THE DICTIONARY (TEACHING IT ENGLISH) ---
 COMMAND_MAP = {
-    "deploy": "cd /home/thatwhiteboy/lazylogic && git add . && git commit -m 'Titan Auto-Deploy' && git push origin main && echo '🚀 DEPLOY SENT: Code pushed to GitHub. Live site updating in 60s.'",
+    "deploy": "cd /home/thatwhiteboy/lazylogic && git add . && git commit -m 'Titan Auto-Deploy' && git branch -m main git push origin maingit push origin main git push -u origin main && echo '🚀 DEPLOY SENT: Code pushed to GitHub. Live site updating in 60s.'",
     "status": "echo '✅ SYSTEM ONLINE' && df -h | grep /dev/sda && echo '--- MEMORY ---' && free -h",
     "backup": "cd /home/thatwhiteboy/lazylogic && python3 titan-backup.py && echo '💾 BACKUP COMPLETE: Saved to ~/lazylogic/backups'",
     "update": "cd /home/thatwhiteboy/lazylogic && git pull && ./venv/bin/pip install -r requirements.txt && echo '🔄 SYSTEM UPDATED'",
