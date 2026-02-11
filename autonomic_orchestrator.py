@@ -8,17 +8,17 @@ URL = "https://ntbujdihrfunfxajhzhs.supabase.co"
 KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50YnVqZGlocmZ1bmZ4YWpoemhzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODc5NzU5OSwiZXhwIjoyMDg0MzczNTk5fQ.ZrDASOrTH81XgqAyFu7cws9Jdj7lo1BRPrbbO0imsCw"
 OUTPUT_FILE = os.path.expanduser("~/lazylogic/titan_output.txt")
 
-# --- THE DICTIONARY (TEACHING IT ENGLISH) ---
+# --- THE DICTIONARY ---
 COMMAND_MAP = {
-    "deploy": "cd /home/thatwhiteboy/lazylogic && git add . && git commit -m 'Titan Auto-Deploy' && git branch -m main git push origin maingit push origin main git push -u origin main && echo '🚀 DEPLOY SENT: Code pushed to GitHub. Live site updating in 60s.'",
-    "status": "echo '✅ SYSTEM ONLINE' && df -h | grep /dev/sda && echo '--- MEMORY ---' && free -h",
-    "backup": "cd /home/thatwhiteboy/lazylogic && python3 titan-backup.py && echo '💾 BACKUP COMPLETE: Saved to ~/lazylogic/backups'",
-    "update": "cd /home/thatwhiteboy/lazylogic && git pull && ./venv/bin/pip install -r requirements.txt && echo '🔄 SYSTEM UPDATED'",
-    "kill": "pkill -f chrome && pkill -f firefox && echo '💀 BROWSERS KILLED'"
+    # THE NUCLEAR DEPLOY: Force pushes local code to 'main' on GitHub
+    "deploy": "cd /home/thatwhiteboy/lazylogic && git add . && git commit -m 'Titan Auto-Deploy' --allow-empty && git push origin HEAD:main --force && echo '🚀 SUCCESS: Code forced to GitHub. Live site is updating.'",
+    "status": "echo '✅ SYSTEM ONLINE' && df -h | grep /dev/sda",
+    "backup": "cd ~/lazylogic && tar -czf backup.tar.gz . && echo '💾 BACKUP SAVED'",
+    "kill": "pkill -f chrome; pkill -f firefox; echo '💀 BROWSERS KILLED'"
 }
 
 def run_worker():
-    print("🦾 TITAN WORKER: Online (Smart Mode)...")
+    print("🦾 TITAN WORKER: Online (Nuclear Mode)...")
     supabase = create_client(URL, KEY)
 
     while True:
@@ -31,17 +31,15 @@ def run_worker():
                 task_id = task['id']
                 raw_command = task['description'].lower().strip()
                 
-                # TRANSLATE ENGLISH -> BASH
-                # If the word is in our dictionary, use the complex command.
-                # If not, just run what you typed.
+                # TRANSLATE
                 final_command = COMMAND_MAP.get(raw_command, task['description'])
 
-                print(f"⚡ RUNNING: {raw_command} -> {final_command[:20]}...")
-
+                print(f"⚡ RUNNING: {raw_command}")
                 supabase.table("tasks").update({"status": "processing"}).eq("id", task_id).execute()
 
                 try:
-                    process = subprocess.run(final_command, shell=True, capture_output=True, text=True, timeout=60)
+                    # Run with a longer timeout for git push
+                    process = subprocess.run(final_command, shell=True, capture_output=True, text=True, timeout=120)
                     output = process.stdout if process.returncode == 0 else f"❌ ERROR:\n{process.stderr}"
                     if not output: output = "✅ Done (No output)."
                     status = "complete" if process.returncode == 0 else "failed"
@@ -49,16 +47,9 @@ def run_worker():
                     output = f"❌ CRASH: {e}"
                     status = "failed"
 
+                # Write to local file for 'titan' command to see
                 with open(OUTPUT_FILE, "w") as f:
                     f.write(output)
-
-                try:
-                    if task.get('bot_id'):
-                        supabase.table("audit_logs").insert({
-                            "bot_id": task['bot_id'], "raw_response": output, "outcome_success": (status == "complete")
-                        }).execute()
-                except:
-                    pass
 
                 supabase.table("tasks").update({"status": status}).eq("id", task_id).execute()
                 print(f"✅ FINISHED #{task_id}")
