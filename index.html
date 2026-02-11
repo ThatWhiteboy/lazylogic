@@ -1,56 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITAN | NEBULA</title>
+    <meta charset="UTF-8"><title>TITAN | NEBULA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background: radial-gradient(circle at center, #0a0a1a 0%, #000000 100%); color: #e2e8f0; font-family: 'Inter', sans-serif; overflow: hidden; }
-        .nebula-glow { text-shadow: 0 0 20px rgba(99, 102, 241, 0.6); }
-        .titan-border { border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; animation: pulse 2s infinite; }
-    </style>
+    <style>body { background: #050505; color: #818cf8; font-family: sans-serif; }</style>
 </head>
-<body class="h-screen flex flex-col items-center justify-center p-6">
-    <div class="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
-    
-    <div class="z-10 text-center space-y-8 max-w-4xl">
-        <header class="space-y-2">
-            <h1 class="text-6xl font-black tracking-tighter nebula-glow italic text-indigo-400">TITAN NEBULA</h1>
-            <p class="text-xl font-light tracking-widest text-slate-400 uppercase">Sovereignty is no longer a service. It's a standard.</p>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="titan-border p-6 rounded-xl transition-all hover:scale-105">
-                <h3 class="font-bold text-indigo-300 mb-2">SELF-HEALING</h3>
-                <p class="text-sm text-slate-500">Autonomous node recovery via localized LLM clusters.</p>
-            </div>
-            <div class="titan-border p-6 rounded-xl transition-all hover:scale-105">
-                <h3 class="font-bold text-indigo-300 mb-2">NEURAL SYNC</h3>
-                <p class="text-sm text-slate-500">Decentralized compute distribution across Titan nodes.</p>
-            </div>
-            <div class="titan-border p-6 rounded-xl transition-all hover:scale-105">
-                <h3 class="font-bold text-indigo-300 mb-2">ZERO-TRUST</h3>
-                <p class="text-sm text-slate-500">End-to-end encrypted infrastructure orchestration.</p>
-            </div>
-        </div>
-
-        <div class="flex items-center justify-center space-x-4 titan-border py-3 px-6 rounded-full inline-block">
-            <div class="status-dot"></div>
-            <span class="text-xs font-mono tracking-widest text-emerald-400">TITAN CORE V3.0 - ALL SYSTEMS OPTIMAL</span>
-        </div>
-
-        <div class="pt-10">
-            <button class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-12 rounded-lg transition-all transform hover:-translate-y-1 shadow-[0_0_30px_rgba(79,70,229,0.4)]">
-                ENTER THE MATRIX
-            </button>
-        </div>
+<body class="h-screen flex flex-col items-center justify-center">
+    <h1 class="text-7xl font-black italic">TITAN NEBULA</h1>
+    <p class="mt-4 tracking-widest opacity-50">SYSTEM VERSION 3.0 // ONLINE</p>
+    <div class="mt-10 p-4 border border-indigo-900 bg-indigo-950/20 rounded">
+        STATUS: NEBULA CORE DEPLOYED SUCCESSFULLY
     </div>
-
-    <footer class="absolute bottom-8 text-[10px] uppercase tracking-[0.3em] text-slate-600">
-        © 2026 TITAN CLOUD AI | DEPLOYED FROM RANCHETTES, WY
-    </footer>
 </body>
 </html>
