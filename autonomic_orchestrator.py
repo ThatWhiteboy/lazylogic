@@ -11,7 +11,7 @@ REPO_PATH = os.path.expanduser("~/lazylogic")
 
 # --- THE COMMANDS ---
 # 1. DEPLOY (Push to Live Site)
-CMD_DEPLOY = f"cd {REPO_PATH} && git add . && git commit -m 'Titan Auto-Fix' --allow-empty && git push origin main --force && echo '🚀 SUCCESS: Live site is updating...'"
+CMD_DEPLOY = f"cd {REPO_PATH} && git add . && git commit -m 'Titan Auto-Fix' --allow-empty && git push -u origin main --force && echo '🚀 SUCCESS: Live site is updating...'"
 
 # 2. UPDATE (Pull upgrades for Titan itself)
 CMD_UPDATE = f"cd {REPO_PATH} && git pull && ./venv/bin/pip install -r requirements.txt && echo '🔄 SYSTEM UPGRADED'"
