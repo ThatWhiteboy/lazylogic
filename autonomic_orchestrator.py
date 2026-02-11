@@ -9,48 +9,27 @@ KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50
 REPO_PATH = os.path.expanduser("~/lazylogic")
 OUTPUT_FILE = os.path.expanduser("~/lazylogic/titan_output.txt")
 
-# --- THE AUTOMATION ENGINE ---
-def run_command(cmd):
-    try:
-        process = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=180)
-        return process.stdout if process.returncode == 0 else f"❌ ERROR:\n{process.stderr}"
-    except Exception as e:
-        return f"❌ CRASH: {e}"
-
 def run_worker():
-    print("🦾 TITAN AUTOPILOT: Initializing...")
+    print("🦾 TITAN NETLIFY ENGINE: Online...")
     supabase = create_client(URL, KEY)
 
     while True:
         try:
             response = supabase.table("tasks").select("*").eq("status", "pending").execute()
-            tasks = response.data
-
-            for task in tasks:
+            for task in response.data:
                 task_id = task['id']
-                raw_text = task['description'].lower().strip()
+                supabase.table("tasks").update({"status": "processing"}).eq("id", task_id).execute()
                 
-                # --- AUTOMATED DEPLOY LOGIC ---
-                if any(x in raw_text for x in ["deploy", "update site", "live"]):
-                    print(f"🚀 AUTONOMOUS DEPLOY STARTING...")
-                    # Phase 1: Local Save
-                    run_command(f"cd {REPO_PATH} && git add . && git commit -m 'Titan Auto-Update' --allow-empty")
-                    # Phase 2: Direct Vercel Push (The skip-the-line move)
-                    output = run_command(f"cd {REPO_PATH} && vercel --prod --yes")
-                
-                # --- AUTOMATED SYSTEM CHECK ---
-                elif "status" in raw_text:
-                    output = run_command("uptime && df -h / | tail -1")
-                
-                # --- DEFAULT BASH ---
-                else:
-                    output = run_command(task['description'])
+                # THE NETLIFY PUSH
+                # --prod: Sends it live
+                # --dir .: Tells Netlify to use the current folder as the website root
+                print(f"🚀 DEPLOYING TO NETLIFY (PROD)...")
+                res = subprocess.run(f"cd {REPO_PATH} && netlify deploy --prod --dir .", shell=True, capture_output=True, text=True)
+                output = res.stdout if res.returncode == 0 else f"❌ ERROR:\n{res.stderr}"
 
-                # Save results & update DB
                 with open(OUTPUT_FILE, "w") as f: f.write(output)
                 supabase.table("tasks").update({"status": "complete"}).eq("id", task_id).execute()
-                print(f"✅ TASK {task_id} PROCESSED.")
-
+                print(f"✅ DEPLOY COMPLETE.")
             time.sleep(1)
         except Exception as e:
             time.sleep(5)
